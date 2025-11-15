@@ -28,7 +28,7 @@ func NewClient(openaiKey string) *Client {
 	return c
 }
 
-func (c *Client) Run(q string) (string, error) {
+func (c *Client) Run(ctx context.Context, q string) (string, error) {
 	var sysMsg strings.Builder
 	mData := message.MessageData{
 		Year:   time.Now().Year(),
@@ -48,7 +48,7 @@ func (c *Client) Run(q string) (string, error) {
 	messages.AddUserAssistantMap(msgMap)
 
 	messages.AddUser(q)
-	chatCompletion, err := c.apiClient.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
+	chatCompletion, err := c.apiClient.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
 		Messages: messages,
 		//Model:    "google/gemini-2.5-flash-lite-preview-09-2025",
 		Model: "google/gemma-3-12b-it",

@@ -1,6 +1,7 @@
 package searxng
 
 import (
+	"context"
 	"encoding/json/v2"
 	"fmt"
 	"strconv"
@@ -22,7 +23,7 @@ func NewClient(url string) *Client {
 	}
 }
 
-func (c *Client) Search(query string, page ...int) (*SearchResponse, error) {
+func (c *Client) Search(ctx context.Context, query string, page ...int) (*SearchResponse, error) {
 	queryParams := map[string]string{
 		"q":      query,
 		"format": "json",
@@ -31,7 +32,7 @@ func (c *Client) Search(query string, page ...int) (*SearchResponse, error) {
 		queryParams["pageno"] = strconv.Itoa(page[0])
 	}
 
-	res, err := c.restyClient.R().
+	res, err := c.restyClient.R().WithContext(ctx).
 		SetQueryParams(queryParams).
 		Get("/search")
 	if err != nil || res.StatusCode() >= 400 {
@@ -45,4 +46,8 @@ func (c *Client) Search(query string, page ...int) (*SearchResponse, error) {
 	}
 	SortResults(&sr.Results)
 	return sr, nil
+}
+
+func (c *Client) Close() {
+	c.restyClient.Close()
 }

@@ -22,6 +22,7 @@ func Start(options ...Option) error {
 
 	aiClient := aiclient.NewClient(conf.OpenAIKey)
 	searchClient := searxng.NewClient(conf.SearxngHost)
+	defer searchClient.Close()
 
 	router, err := NewApp(aiClient, searchClient)
 	if err != nil {
