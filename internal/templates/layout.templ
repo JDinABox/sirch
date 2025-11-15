@@ -1,0 +1,23 @@
+package templates
+
+templ main(body templ.Component) {
+	<main id="main" class="">
+		@body
+	</main>
+}
+
+templ Layout(head, body templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			@head
+			<!--<script type="module" src={ web.GetAssetUri("web/main.ts") }></script>
+			<link rel="stylesheet" href={ web.GetAssetUri("web/style.css") }/>-->
+		</head>
+		<body :class="{ 'dark': theme.dark }" class="dark">
+			@main(body)
+		</body>
+	</html>
+}

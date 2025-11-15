@@ -1,0 +1,75 @@
+package search
+
+import (
+	"fmt"
+	"github.com/JDinABox/sirch/internal/templates"
+	"strings"
+)
+
+templ Head() {
+	<title>Search</title>
+	<meta name="description" content="Search"/>
+}
+
+templ Body(query string, data chan templates.SlotContents) {
+	<form action="/search" method="get">
+		<div>
+			<label for="q">Search </label>
+			<input type="text" name="q" id="q" value={ query } required/>
+		</div>
+		<div class="form-example">
+			<input type="submit" value="Submit"/>
+		</div>
+	</form>
+	<div>
+		@templ.Flush() {
+			<template shadowrootmode="open">
+				<slot name="recommendations">
+					<div>Loading Recommendations...</div>
+				</slot>
+				<slot name="result">
+					<div>Loading Results...</div>
+				</slot>
+			</template>
+		}
+		for sc := range data {
+			@templ.Flush() {
+				<div slot={ sc.Name }>
+					@sc.Contents
+				</div>
+			}
+		}
+	</div>
+}
+
+templ Recommendations(r []string) {
+	<ul>
+		for _, rec := range r {
+			if rec == "" {
+				{{ continue }}
+			}
+			<li>
+				<a href={ fmt.Sprintf("/search?q=%s", strings.ReplaceAll(rec, " ", "+")) }>{ rec }</a>
+			</li>
+		}
+	</ul>
+}
+
+type SearchResult struct {
+	URL     string
+	Title   string
+	Snippet string
+}
+
+templ R(r string) {
+	<pre><code>{ r }</code></pre>
+}
+
+templ Results(r []SearchResult) {
+	for _, result := range r {
+		<div>
+			<a href={ result.URL }>{ result.Title }</a>
+			<p>{ result.Snippet }</p>
+		</div>
+	}
+}

@@ -1,0 +1,18 @@
+package home
+
+templ Head() {
+	<title>Sirch</title>
+	<meta name="description" content="Sirch - a search engine."/>
+}
+
+templ Body() {
+	<form action="/search" method="get">
+		<div>
+			<label for="q">Search </label>
+			<input type="text" name="q" id="q" required/>
+		</div>
+		<div class="form-example">
+			<input type="submit" value="Submit"/>
+		</div>
+	</form>
+}
