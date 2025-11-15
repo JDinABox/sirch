@@ -43,7 +43,7 @@ func NewConfig(options ...Option) (*Config, error) {
 	}
 
 	if conf.OpenAIKey == "" {
-		return nil, errors.New("ZITADEL_DOMAIN is not set")
+		return nil, errors.New("OPENAI_API_KEY is not set")
 	}
 
 	return conf, nil
