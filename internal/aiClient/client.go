@@ -2,7 +2,6 @@ package aiclient
 
 import (
 	"context"
-	"os"
 	"strings"
 	"time"
 
@@ -15,16 +14,21 @@ type Client struct {
 	apiClient openai.Client
 }
 
-func Run(q string) (string, error) {
-	client := openai.NewClient(
-		option.WithBaseURL("https://openrouter.ai/api/v1"),
-		option.WithAPIKey(os.Getenv("OPENAI_API_KEY")),
-		//option.WithHeader()
-		option.WithJSONSet("usage.include", true),
-		option.WithHeader("HTTP-Referer", "https://github.com/JDinABox/sirch"),
-		option.WithHeader("X-Title", "Sirch"),
-	)
+func NewClient(openaiKey string) *Client {
+	c := &Client{
+		apiClient: openai.NewClient(
+			option.WithBaseURL("https://openrouter.ai/api/v1"),
+			option.WithAPIKey(openaiKey),
+			//option.WithHeader()
+			option.WithJSONSet("usage.include", true),
+			option.WithHeader("HTTP-Referer", "https://github.com/JDinABox/sirch"),
+			option.WithHeader("X-Title", "Sirch"),
+		),
+	}
+	return c
+}
 
+func (c *Client) Run(q string) (string, error) {
 	var sysMsg strings.Builder
 	mData := message.MessageData{
 		Year:   time.Now().Year(),
@@ -44,7 +48,7 @@ func Run(q string) (string, error) {
 	messages.AddUserAssistantMap(msgMap)
 
 	messages.AddUser(q)
-	chatCompletion, err := client.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
+	chatCompletion, err := c.apiClient.Chat.Completions.New(context.TODO(), openai.ChatCompletionNewParams{
 		Messages: messages,
 		//Model:    "google/gemini-2.5-flash-lite-preview-09-2025",
 		Model: "google/gemma-3-12b-it",

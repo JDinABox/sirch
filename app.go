@@ -1,7 +1,9 @@
 package sirch
 
 import (
+	aiclient "github.com/JDinABox/sirch/internal/aiClient"
 	"github.com/JDinABox/sirch/internal/handlers"
+	"github.com/JDinABox/sirch/internal/searxng"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -9,7 +11,7 @@ import (
 // Config struct is assumed to exist and is used for other application configurations.
 // ZITADEL parameters are passed as arguments to NewApp.
 
-func NewApp(c *Config) (*chi.Mux, error) {
+func NewApp(aiClient *aiclient.Client, searchClient *searxng.Client) (*chi.Mux, error) {
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
@@ -17,7 +19,7 @@ func NewApp(c *Config) (*chi.Mux, error) {
 	r.Use(middleware.CleanPath)
 	r.Get("/", handlers.Home())
 	r.Route("/search", func(r chi.Router) {
-		r.Get("/", handlers.Search())
+		r.Get("/", handlers.Search(aiClient, searchClient))
 	})
 	return r, nil
 }

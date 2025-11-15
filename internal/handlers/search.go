@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json/v2"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -16,7 +15,7 @@ import (
 	"resty.dev/v3"
 )
 
-func Search() http.HandlerFunc {
+func Search(aiClient *aiclient.Client, searchClient *searxng.Client) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		query := strings.TrimSpace(r.URL.Query().Get("q"))
 		if query == "" {
@@ -27,23 +26,14 @@ func Search() http.HandlerFunc {
 
 		dataChan := make(chan templates.SlotContents)
 		var wg sync.WaitGroup
-		wg.Add(2)
 
-		go func() {
-			defer wg.Done()
-			client := resty.New()
-			defer client.Close()
+		client := resty.New()
+		defer client.Close()
 
-			res, err := client.R().
-				SetQueryParams(map[string]string{
-					"q":      query,
-					"format": "json",
-				}).
-				SetHeader("Accept", "application/json, text/html").
-				SetHeader("Accept-Language", "*").
-				Get("https://searxng.crawford.zone/search")
-			if err != nil || res.StatusCode() >= 400 {
-				slog.Error("unable to fetch searxng response", "ERROR", fmt.Sprintf("status: %d error: %v", res.StatusCode(), err))
+		wg.Go(func() {
+			sr, err := searchClient.Search(query)
+			if err != nil {
+				slog.Error("unable to get searxng response", "ERROR", err)
 				dataChan <- templates.SlotContents{
 					Name:     "result",
 					Contents: search.R("Something went wrong"),
@@ -51,31 +41,21 @@ func Search() http.HandlerFunc {
 				return
 			}
 
-			// Debug: Log the raw JSON response
-			rawJSON := res.Bytes()
-
-			var sr searxng.SearchResponse
-			sr.Results = []searxng.Result{}
-
-			err = json.Unmarshal(rawJSON, &sr)
-			if err != nil {
-				slog.Error("unable to decode json", "ERROR", fmt.Sprintf("error: %v json: %s", err, rawJSON))
+			if len(sr.Results) == 0 {
 				dataChan <- templates.SlotContents{
 					Name:     "result",
-					Contents: search.R("Something went wrong"),
+					Contents: search.R("No results"),
 				}
+				return
 			}
-
-			searxng.SortResults(&sr.Results)
 
 			dataChan <- templates.SlotContents{
 				Name:     "result",
 				Contents: search.Results(sr),
 			}
-		}()
-		go func() {
-			defer wg.Done()
-			data, err := aiclient.Run(fmt.Sprintf("[%s]", queryWSpaces))
+		})
+		wg.Go(func() {
+			data, err := aiClient.Run(fmt.Sprintf("[%s]", queryWSpaces))
 			if err != nil {
 				slog.Error("unable to get ai recommendations", "ERROR", err)
 				dataChan <- templates.SlotContents{
@@ -89,7 +69,7 @@ func Search() http.HandlerFunc {
 				Name:     "recommendations",
 				Contents: search.Recommendations(strings.Split(data, "\n")),
 			}
-		}()
+		})
 
 		go func() {
 			wg.Wait()

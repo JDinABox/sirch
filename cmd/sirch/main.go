@@ -12,6 +12,7 @@ import (
 func main() {
 	confOptions := []sirch.Option{
 		sirch.WithOpenAIKey(trimGetEnv("OPENAI_API_KEY")),
+		sirch.WithSearxngHost(trimGetEnv("SEARXNG_HOST")),
 	}
 	if addr := trimGetEnv("ADDRESS"); addr != "" {
 		confOptions = append(confOptions, sirch.WithAddr(addr))

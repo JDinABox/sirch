@@ -2,7 +2,6 @@ package sirch
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -10,44 +9,10 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	aiclient "github.com/JDinABox/sirch/internal/aiClient"
+	"github.com/JDinABox/sirch/internal/searxng"
 )
-
-type Config struct {
-	Addr      string
-	OpenAIKey string
-}
-type Option func(*Config) error
-
-func WithAddr(addr string) Option {
-	return func(c *Config) error {
-		c.Addr = addr
-		return nil
-	}
-}
-
-func WithOpenAIKey(key string) Option {
-	return func(c *Config) error {
-		c.OpenAIKey = key
-		return nil
-	}
-}
-
-func NewConfig(options ...Option) (*Config, error) {
-	conf := &Config{
-		Addr: ":8080",
-	}
-	for _, o := range options {
-		if err := o(conf); err != nil {
-			return nil, err
-		}
-	}
-
-	if conf.OpenAIKey == "" {
-		return nil, errors.New("OPENAI_API_KEY is not set")
-	}
-
-	return conf, nil
-}
 
 func Start(options ...Option) error {
 	conf, err := NewConfig(options...)
@@ -55,7 +20,10 @@ func Start(options ...Option) error {
 		return fmt.Errorf("failed to create config: %w", err)
 	}
 
-	router, err := NewApp(conf)
+	aiClient := aiclient.NewClient(conf.OpenAIKey)
+	searchClient := searxng.NewClient(conf.SearxngHost)
+
+	router, err := NewApp(aiClient, searchClient)
 	if err != nil {
 		return fmt.Errorf("failed to create app: %w", err)
 	}
