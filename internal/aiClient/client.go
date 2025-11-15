@@ -19,9 +19,10 @@ func Run(q string) (string, error) {
 	client := openai.NewClient(
 		option.WithBaseURL("https://openrouter.ai/api/v1"),
 		option.WithAPIKey(os.Getenv("OPENAI_API_KEY")),
-		option.WithProject("Sirch"),
 		//option.WithHeader()
 		option.WithJSONSet("usage.include", true),
+		option.WithHeader("HTTP-Referer", "https://github.com/JDinABox/sirch"),
+		option.WithHeader("X-Title", "Sirch"),
 	)
 
 	var sysMsg strings.Builder
