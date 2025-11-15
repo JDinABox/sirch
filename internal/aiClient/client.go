@@ -28,7 +28,7 @@ func NewClient(openaiKey string) *Client {
 	return c
 }
 
-func (c *Client) Run(ctx context.Context, q string) (string, error) {
+func (c *Client) RunQueryExpand(ctx context.Context, q string) (string, error) {
 	var sysMsg strings.Builder
 	mData := message.MessageData{
 		Year:   time.Now().Year(),

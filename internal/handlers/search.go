@@ -55,7 +55,7 @@ func Search(aiClient *aiclient.Client, searchClient *searxng.Client) http.Handle
 			}
 		})
 		wg.Go(func() {
-			data, err := aiClient.Run(r.Context(), fmt.Sprintf("[%s]", queryWSpaces))
+			data, err := aiClient.RunQueryExpand(r.Context(), fmt.Sprintf("[%s]", queryWSpaces))
 			if err != nil {
 				slog.Error("unable to get ai recommendations", "ERROR", err)
 				dataChan <- templates.SlotContents{
