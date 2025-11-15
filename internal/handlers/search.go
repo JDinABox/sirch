@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strconv"
 	"strings"
 	"sync"
 
 	aiclient "github.com/JDinABox/sirch/internal/aiClient"
+	"github.com/JDinABox/sirch/internal/searxng"
 	"github.com/JDinABox/sirch/internal/templates"
 	"github.com/JDinABox/sirch/internal/templates/search"
 	"github.com/a-h/templ"
@@ -42,30 +42,42 @@ func Search() http.HandlerFunc {
 				SetHeader("Accept", "application/json, text/html").
 				SetHeader("Accept-Language", "*").
 				Get("https://searxng.crawford.zone/search")
-			slog.Info("Status Code", "INFO", strconv.Itoa(res.StatusCode()))
-			slog.Info("err", "INFO", err)
 			if err != nil || res.StatusCode() >= 400 {
+				slog.Error("unable to fetch searxng response", "ERROR", fmt.Sprintf("status: %d error: %v", res.StatusCode(), err))
 				dataChan <- templates.SlotContents{
 					Name:     "result",
 					Contents: search.R("Something went wrong"),
 				}
 				return
 			}
-			var j map[string]string
-			json.Unmarshal(res.Bytes(), &j)
-			/*var jr []search.SearchResult
-			if _, ok := j[""] {
 
-			}*/
+			// Debug: Log the raw JSON response
+			rawJSON := res.Bytes()
+
+			var sr searxng.SearchResponse
+			sr.Results = []searxng.Result{}
+
+			err = json.Unmarshal(rawJSON, &sr)
+			if err != nil {
+				slog.Error("unable to decode json", "ERROR", fmt.Sprintf("error: %v json: %s", err, rawJSON))
+				dataChan <- templates.SlotContents{
+					Name:     "result",
+					Contents: search.R("Something went wrong"),
+				}
+			}
+
+			searxng.SortResults(&sr.Results)
+
 			dataChan <- templates.SlotContents{
 				Name:     "result",
-				Contents: search.R(fmt.Sprint(j)),
+				Contents: search.Results(sr),
 			}
 		}()
 		go func() {
 			defer wg.Done()
 			data, err := aiclient.Run(fmt.Sprintf("[%s]", queryWSpaces))
 			if err != nil {
+				slog.Error("unable to get ai recommendations", "ERROR", err)
 				dataChan <- templates.SlotContents{
 					Name:     "recommendations",
 					Contents: search.R("Something went wrong"),

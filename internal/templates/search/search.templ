@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"github.com/JDinABox/sirch/internal/searxng"
 	"github.com/JDinABox/sirch/internal/templates"
 	"strings"
 )
@@ -65,11 +66,13 @@ templ R(r string) {
 	<pre><code>{ r }</code></pre>
 }
 
-templ Results(r []SearchResult) {
-	for _, result := range r {
-		<div>
-			<a href={ result.URL }>{ result.Title }</a>
-			<p>{ result.Snippet }</p>
-		</div>
-	}
+templ Results(sr searxng.SearchResponse) {
+	<div>
+		for _, result := range sr.Results {
+			<div>
+				<a href={ result.URL }>{ result.Title }</a>
+				<p>{ result.Content }</p>
+			</div>
+		}
+	</div>
 }
