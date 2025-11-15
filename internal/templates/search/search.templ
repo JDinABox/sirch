@@ -31,6 +31,9 @@ templ Body(query string, data chan templates.SlotContents) {
 				<slot name="result">
 					<div>Loading Results...</div>
 				</slot>
+				<slot name="top2">
+					<div>Loading Top2 Results...</div>
+				</slot>
 			</template>
 		}
 		for sc := range data {
@@ -73,6 +76,16 @@ templ Results(sr *searxng.SearchResponse) {
 				<a href={ result.URL }>{ result.Title }</a>
 				<p>{ result.Content }</p>
 			</div>
+		}
+	</div>
+}
+
+templ Top2(sr []string) {
+	<div>
+		for _, result := range sr {
+			<pre>
+				{ result }
+			</pre>
 		}
 	</div>
 }

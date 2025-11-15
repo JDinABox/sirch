@@ -7,6 +7,8 @@ import (
 	"strings"
 	"sync"
 
+	htmltomarkdown "github.com/JohannesKaufmann/html-to-markdown/v2"
+
 	aiclient "github.com/JDinABox/sirch/internal/aiClient"
 	"github.com/JDinABox/sirch/internal/searxng"
 	"github.com/JDinABox/sirch/internal/templates"
@@ -49,6 +51,42 @@ func Search(aiClient *aiclient.Client, searchClient *searxng.Client) http.Handle
 				return
 			}
 
+			wg.Go(func() {
+				l := len(sr.Results)
+				if l > 2 {
+					l = 2
+				}
+				var wgIn sync.WaitGroup
+				siteData := make(chan string, l)
+				for i := range l {
+					wgIn.Go(func() {
+						res, err := client.R().SetHeader("Accept", "text/html").
+							SetHeader("Accept-Language", "*").
+							Get(sr.Results[i].URL)
+						if err != nil {
+							slog.Warn("unable to fetch site", "WARN", err)
+						}
+						md, err := htmltomarkdown.ConvertReader(res.Body)
+						if err != nil {
+							slog.Warn("unable to convert html", "WARN", err)
+						}
+
+						siteData <- string(md)
+					})
+				}
+				go func() {
+					wgIn.Wait()
+					close(siteData)
+				}()
+				dc := make([]string, l)
+				for d := range siteData {
+					dc = append(dc, d)
+				}
+				dataChan <- templates.SlotContents{
+					Name:     "top2",
+					Contents: search.Top2(dc),
+				}
+			})
 			dataChan <- templates.SlotContents{
 				Name:     "result",
 				Contents: search.Results(sr),
