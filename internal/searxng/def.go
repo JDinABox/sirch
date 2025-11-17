@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"encoding/json/v2"
 	"slices"
+	"strings"
 	"time"
 )
 
@@ -58,18 +59,34 @@ type SearchResponse struct {
 	UnresponsiveEngines []EngineError `json:"unresponsive_engines"`
 }
 
-func SortResults(r *[]Result) {
+func OrderResults(r *[]Result) {
+	for k, _ := range *r {
+		switch (*r)[k].Priority {
+		case "high":
+			(*r)[k].Score *= 2
+		case "low":
+			(*r)[k].Score /= 2
+		}
+	}
 	slices.SortFunc(*r, func(i, j Result) int {
 		return cmp.Compare(j.Score, i.Score)
 	})
+}
+func OrderForContext(r *[]Result) {
+	for k, _ := range *r {
+		if strings.Contains((*r)[k].ParsedURL[1], "youtube.com") || strings.Contains((*r)[k].ParsedURL[1], "vimeo.com") {
+			(*r)[k].Score = 0
+		}
+	}
+	OrderResults(r)
 }
 
 // Result represents a single search result item
 type Result struct {
 	// Base Result fields
-	URL       string   `json:"url"`
-	Engine    string   `json:"engine"`
-	ParsedURL []string `json:"parsed_url,omitempty"`
+	URL       string    `json:"url"`
+	Engine    string    `json:"engine"`
+	ParsedURL [6]string `json:"parsed_url,omitempty"`
 
 	// MainResult fields
 	Template      string   `json:"template"`

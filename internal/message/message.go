@@ -10,10 +10,14 @@ type MessageData struct {
 	Year   int
 }
 type AiMessage []openai.ChatCompletionMessageParamUnion
+type UserAssistant struct {
+	User      string
+	Assistant string
+}
 
-func (m *AiMessage) AddUserAssistantMap(mapToAdd map[string]string) {
-	for k, v := range mapToAdd {
-		(*m) = append(*m, openai.UserMessage(k), openai.AssistantMessage(v))
+func (m *AiMessage) AddUserAssistant(us []UserAssistant) {
+	for _, v := range us {
+		(*m) = append(*m, openai.UserMessage(v.User), openai.AssistantMessage(v.Assistant))
 	}
 }
 func (m *AiMessage) AddUser(userMsg string) {

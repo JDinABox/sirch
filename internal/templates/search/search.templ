@@ -73,7 +73,7 @@ templ Results(sr *searxng.SearchResponse) {
 	<div>
 		for _, result := range sr.Results {
 			<div>
-				<a href={ result.URL }>{ result.Title }</a>
+				<a href={ result.URL }>{ result.Title }</a> { result.Score } { result.Priority }
 				<p>{ result.Content }</p>
 			</div>
 		}

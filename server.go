@@ -20,7 +20,7 @@ func Start(options ...Option) error {
 		return fmt.Errorf("failed to create config: %w", err)
 	}
 
-	aiClient := aiclient.NewClient(conf.OpenAIKey)
+	aiClient := aiclient.NewClient("https://openrouter.ai/api/v1", conf.OpenAIKey)
 	searchClient := searxng.NewClient(conf.SearxngHost)
 	defer searchClient.Close()
 

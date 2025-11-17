@@ -3,6 +3,7 @@ module github.com/JDinABox/sirch
 go 1.25.1
 
 require (
+	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/a-h/templ v0.3.960
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/openai/openai-go/v3 v3.8.1
@@ -10,11 +11,16 @@ require (
 )
 
 require (
+	github.com/andybalholm/cascadia v1.3.3 // indirect
+	golang.org/x/text v0.31.0 // indirect
+)
+
+require (
 	github.com/JohannesKaufmann/dom v0.2.0 // indirect
-	github.com/JohannesKaufmann/html-to-markdown/v2 v2.4.0 // indirect
+	github.com/JohannesKaufmann/html-to-markdown/v2 v2.4.0
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.2.0 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
-	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/net v0.47.0
 )

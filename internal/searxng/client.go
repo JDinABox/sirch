@@ -38,13 +38,14 @@ func (c *Client) Search(ctx context.Context, query string, page ...int) (*Search
 	if err != nil || res.StatusCode() >= 400 {
 		return nil, fmt.Errorf("unable to fetch searxng response status: %d error: %w", res.StatusCode(), err)
 	}
+	defer res.Body.Close()
 
 	rawJSON := res.Bytes()
 	var sr *SearchResponse
 	if err = json.Unmarshal(rawJSON, &sr); err != nil {
 		return nil, fmt.Errorf("unable to unmarshal searxng response error: %w\nraw JSON:\n%s\n", err, rawJSON)
 	}
-	SortResults(&sr.Results)
+	OrderResults(&sr.Results)
 	return sr, nil
 }
 

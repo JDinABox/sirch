@@ -98,8 +98,8 @@ func init() {
 
 var QueryExpandData map[string][]string = make(map[string][]string)
 
-func TemplateToString(tm map[string][]string, data any) (map[string]string, error) {
-	d := make(map[string]string)
+func TemplateToUserAssistant(tm map[string][]string, data any) ([]UserAssistant, error) {
+	us := make([]UserAssistant, len(tm))
 	for k, t := range tm {
 		var sB strings.Builder
 		for _, line := range t {
@@ -119,7 +119,10 @@ func TemplateToString(tm map[string][]string, data any) (map[string]string, erro
 			return nil, fmt.Errorf("unable to execute template: %v error: %w", k, err)
 		}
 
-		d[k] = sB.String()
+		us = append(us, UserAssistant{
+			User:      k,
+			Assistant: sB.String(),
+		})
 	}
-	return d, nil
+	return us, nil
 }

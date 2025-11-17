@@ -325,25 +325,51 @@ func Results(sr *searxng.SearchResponse) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</a><p>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</a> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
-			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(result.Content)
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(result.Score)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/search/search.templ`, Line: 77, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/search/search.templ`, Line: 76, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, " ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var16 string
+			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(result.Priority)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/search/search.templ`, Line: 76, Col: 82}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var17 string
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(result.Content)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/search/search.templ`, Line: 77, Col: 23}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -367,35 +393,35 @@ func Top2(sr []string) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var16 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var16 == nil {
-			templ_7745c5c3_Var16 = templ.NopComponent
+		templ_7745c5c3_Var18 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var18 == nil {
+			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, result := range sr {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<pre>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<pre>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var17 string
-			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(result)
+			var templ_7745c5c3_Var19 string
+			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(result)
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/search/search.templ`, Line: 87, Col: 12}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</pre>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</pre>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
