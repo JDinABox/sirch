@@ -8,6 +8,8 @@ package home
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/JDinABox/sirch/internal/templates/components"
+
 func Head() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -58,7 +60,15 @@ func Body() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<form action=\"/search\" method=\"get\"><div><label for=\"q\">Search </label> <input type=\"text\" name=\"q\" id=\"q\" required></div><div class=\"form-example\"><input type=\"submit\" value=\"Submit\"></div></form>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"grid flex-1 grid-cols-1 grid-rows-2\"><div class=\"flex items-end-safe grow \"><div class=\"flex flex-col max-w-2xl mx-auto grow row\"><h1 for=\"q\" class=\"mb-4 text-3xl font-bold text-center sm:text-4xl\">Sirch</h1>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.SearchBar(components.SearchBarOptions{}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

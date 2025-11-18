@@ -3,7 +3,7 @@ package search
 import (
 	"fmt"
 	"github.com/JDinABox/sirch/internal/searxng"
-	"github.com/JDinABox/sirch/internal/templates"
+	"github.com/JDinABox/sirch/internal/templates/components"
 	"strings"
 )
 
@@ -12,51 +12,53 @@ templ Head() {
 	<meta name="description" content="Search"/>
 }
 
-templ Body(query string, data chan templates.SlotContents) {
-	<form action="/search" method="get">
-		<div>
-			<label for="q">Search </label>
-			<input type="text" name="q" id="q" value={ query } required/>
+templ Body(query string, data chan templ.Component) {
+	<div class="flex flex-col grow shrink">
+		<div action="/search" method="get" class="md:grid md:grid-cols-8">
+			<div class="flex items-center md:justify-end-safe md:pr-8">
+				<h1><a href="/" class="text-lg font-bold md:text-xl">Sirch</a></h1>
+			</div>
+			<div class="md:col-span-6 lg:col-span-5">
+				@components.SearchBar(components.SearchBarOptions{Value: query})
+			</div>
 		</div>
-		<div class="form-example">
-			<input type="submit" value="Submit"/>
-		</div>
-	</form>
-	<div>
-		@templ.Flush() {
-			<template shadowrootmode="open">
-				<slot name="recommendations">
-					<div>Loading Recommendations...</div>
-				</slot>
-				<slot name="result">
-					<div>Loading Results...</div>
-				</slot>
-				<slot name="top2">
-					<div>Loading Top2 Results...</div>
-				</slot>
-			</template>
-		}
-		for sc := range data {
+		<div class="md:grid md:grid-cols-8">
 			@templ.Flush() {
-				<div slot={ sc.Name }>
-					@sc.Contents
-				</div>
+				<template shadowrootmode="open">
+					<link rel="stylesheet" href="/assets/output.css"/>
+					<slot name="recommendations">
+						<div class="md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-5">Loading Recommendations...</div>
+					</slot>
+					<slot name="results">
+						<div class="md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-5">Loading Results...</div>
+					</slot>
+					<!--<slot name="top2">
+						<div>Loading Top2 Results...</div>
+					</slot>-->
+				</template>
 			}
-		}
+			for tc := range data {
+				@templ.Flush() {
+					@tc
+				}
+			}
+		</div>
 	</div>
 }
 
 templ Recommendations(r []string) {
-	<ul>
-		for _, rec := range r {
-			if rec == "" {
-				{{ continue }}
+	<div class="md:col-start-2 md:col-span-6 lg:col-start-2 lg:col-span-5" slot="recommendations">
+		<ul class="flex my-3 col-span-full">
+			for _, rec := range r {
+				if rec == "" {
+					{{ continue }}
+				}
+				<li>
+					<a href={ fmt.Sprintf("/search?q=%s", strings.ReplaceAll(rec, " ", "+")) }>{ rec }</a>
+				</li>
 			}
-			<li>
-				<a href={ fmt.Sprintf("/search?q=%s", strings.ReplaceAll(rec, " ", "+")) }>{ rec }</a>
-			</li>
-		}
-	</ul>
+		</ul>
+	</div>
 }
 
 type SearchResult struct {
@@ -65,18 +67,26 @@ type SearchResult struct {
 	Snippet string
 }
 
-templ R(r string) {
-	<pre><code>{ r }</code></pre>
+templ R(slot, r string) {
+	<pre slot="slot"><code>{ r }</code></pre>
 }
 
 templ Results(sr *searxng.SearchResponse) {
-	<div>
-		for _, result := range sr.Results {
-			<div>
-				<a href={ result.URL }>{ result.Title }</a> { result.Score } { result.Priority }
-				<p>{ result.Content }</p>
-			</div>
-		}
+	<div class="md:col-span-6 md:col-start-2 lg:col-start-2 lg:col-span-4" slot="results">
+		<div class="space-y-3 ">
+			for _, result := range sr.Results {
+				<div>
+					<div class="text-sm text-neutral-400">
+						<a href={ result.URL } class="cursor-pointer">{ result.URL }</a> - Score: { result.Score }
+						if result.Priority != "" {
+							- Priority: { result.Priority }
+						}
+					</div>
+					<a href={ result.URL } class="link">{ result.Title }</a>
+					<div>{ result.Content }</div>
+				</div>
+			}
+		</div>
 	</div>
 }
 

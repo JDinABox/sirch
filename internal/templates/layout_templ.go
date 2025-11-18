@@ -29,7 +29,7 @@ func main(body templ.Component) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<main id=\"main\" class=\"\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<main id=\"main\" class=\"flex flex-1 grow font-sans text-base sm:text-lg\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -74,7 +74,7 @@ func Layout(head, body templ.Component) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<!--<script type=\"module\" src={ web.GetAssetUri(\"web/main.ts\") }></script>\n\t\t\t<link rel=\"stylesheet\" href={ web.GetAssetUri(\"web/style.css\") }/>--></head><body :class=\"{ 'dark': theme.dark }\" class=\"dark\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<!--<script type=\"module\" src={ web.GetAssetUri(\"web/main.ts\") }></script>\n\t\t\t<link rel=\"stylesheet\" href={ web.GetAssetUri(\"web/style.css\") }/>--><link rel=\"stylesheet\" href=\"/assets/output.css\"></head><body class=\"bg-neutral-950 text-neutral-200 flex min-h-screen min-w-full\"><div class=\"mx-auto flex grow flex-col px-3 sm:px-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -82,7 +82,7 @@ func Layout(head, body templ.Component) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

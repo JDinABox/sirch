@@ -27,5 +27,6 @@ func NewApp(conf *Config, aiClient *aiclient.Client, searchClient *searxng.Clien
 		}
 		r.Get("/", handlers.Search(aiClient, searchClient))
 	})
+	r.Handle("/assets/*", handlers.Media())
 	return r, nil
 }

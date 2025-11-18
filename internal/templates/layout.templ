@@ -1,7 +1,7 @@
 package templates
 
 templ main(body templ.Component) {
-	<main id="main" class="">
+	<main id="main" class="flex flex-1 grow font-sans text-base sm:text-lg">
 		@body
 	</main>
 }
@@ -15,9 +15,12 @@ templ Layout(head, body templ.Component) {
 			@head
 			<!--<script type="module" src={ web.GetAssetUri("web/main.ts") }></script>
 			<link rel="stylesheet" href={ web.GetAssetUri("web/style.css") }/>-->
+			<link rel="stylesheet" href="/assets/output.css"/>
 		</head>
-		<body :class="{ 'dark': theme.dark }" class="dark">
-			@main(body)
+		<body class="bg-neutral-950 text-neutral-200 flex min-h-screen min-w-full">
+			<div class="mx-auto flex grow flex-col px-3 sm:px-6">
+				@main(body)
+			</div>
 		</body>
 	</html>
 }
