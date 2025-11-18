@@ -39,9 +39,12 @@ func Search(aiClient *aiclient.Client, searchClient *searxng.Client) http.Handle
 		wg.Go(func() {
 			sr, err := searchClient.Search(r.Context(), query)
 			if err != nil {
-				slog.Error("unable to get searxng response", "ERROR", err)
-				dataChan <- search.R("result", "Something went wrong")
-				return
+				if sr == nil {
+					slog.Error("unable to get searxng response", "ERROR", err)
+					dataChan <- search.R("result", "Something went wrong")
+					return
+				}
+				slog.Error("able to get searxng response but errored", "ERROR", err)
 			}
 
 			if len(sr.Results) == 0 {

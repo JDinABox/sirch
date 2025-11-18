@@ -11,6 +11,7 @@ type Config struct {
 	OpenAIKey   string
 	SearxngHost string
 	Public      bool
+	DBPath      string
 }
 
 type Option func(*Config) error
@@ -46,10 +47,18 @@ func WithPublicString(public string) Option {
 	}
 }
 
+func WithDBPath(path string) Option {
+	return func(c *Config) error {
+		c.DBPath = path
+		return nil
+	}
+}
+
 func NewConfig(options ...Option) (*Config, error) {
 	conf := &Config{
 		Addr:   ":8080",
 		Public: true,
+		DBPath: "./db/db.sqlite",
 	}
 	for _, o := range options {
 		if err := o(conf); err != nil {
