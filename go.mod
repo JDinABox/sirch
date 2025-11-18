@@ -6,12 +6,16 @@ require (
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/a-h/templ v0.3.960
 	github.com/go-chi/chi/v5 v5.2.3
+	github.com/go-chi/httprate v0.15.0
 	github.com/openai/openai-go/v3 v3.8.1
 	resty.dev/v3 v3.0.0-beta.3
 )
 
 require (
 	github.com/andybalholm/cascadia v1.3.3 // indirect
+	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
+	github.com/zeebo/xxh3 v1.0.2 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 	golang.org/x/text v0.31.0 // indirect
 )
 

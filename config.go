@@ -1,12 +1,18 @@
 package sirch
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"strconv"
+)
 
 type Config struct {
 	Addr        string
 	OpenAIKey   string
 	SearxngHost string
+	Public      bool
 }
+
 type Option func(*Config) error
 
 func WithAddr(addr string) Option {
@@ -29,9 +35,21 @@ func WithSearxngHost(host string) Option {
 	}
 }
 
+func WithPublicString(public string) Option {
+	return func(c *Config) error {
+		boolValue, err := strconv.ParseBool(public)
+		if err != nil {
+			return fmt.Errorf("unable to parse public environment variable: %w", err)
+		}
+		c.Public = boolValue
+		return nil
+	}
+}
+
 func NewConfig(options ...Option) (*Config, error) {
 	conf := &Config{
-		Addr: ":8080",
+		Addr:   ":8080",
+		Public: true,
 	}
 	for _, o := range options {
 		if err := o(conf); err != nil {

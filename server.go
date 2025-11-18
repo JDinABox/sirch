@@ -24,7 +24,7 @@ func Start(options ...Option) error {
 	searchClient := searxng.NewClient(conf.SearxngHost)
 	defer searchClient.Close()
 
-	router, err := NewApp(aiClient, searchClient)
+	router, err := NewApp(conf, aiClient, searchClient)
 	if err != nil {
 		return fmt.Errorf("failed to create app: %w", err)
 	}

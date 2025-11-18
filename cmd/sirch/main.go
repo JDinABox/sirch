@@ -17,6 +17,9 @@ func main() {
 	if addr := trimGetEnv("ADDRESS"); addr != "" {
 		confOptions = append(confOptions, sirch.WithAddr(addr))
 	}
+	if public := trimGetEnv("PUBLIC"); public != "" {
+		confOptions = append(confOptions, sirch.WithPublicString(public))
+	}
 	if err := sirch.Start(confOptions...); err != nil {
 		slog.Error("application exited with an error", "error", err)
 		os.Exit(1)
