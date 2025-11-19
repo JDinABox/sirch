@@ -103,7 +103,7 @@ var errNilSearchResponse = errors.New("nil SearchResponse pointer")
 
 func (c *Client) addToDB(ctx context.Context, key string, sr *SearchResponse) error {
 	if sr == nil {
-		return fmt.Errorf("key: %s err: %w", errNilSearchResponse)
+		return fmt.Errorf("key: %s err: %w", key, errNilSearchResponse)
 	}
 	o, err := sr.MarshalMsg(nil)
 	if err != nil {
