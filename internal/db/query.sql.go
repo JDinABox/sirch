@@ -11,50 +11,51 @@ import (
 )
 
 const deleteOld = `-- name: DeleteOld :exec
-DELETE FROM cache WHERE key like ? and created_at < ?
+DELETE FROM cache WHERE key like ? and expires <= ?
 `
 
 type DeleteOldParams struct {
-	Key       string
-	CreatedAt time.Time
+	Key     string
+	Expires time.Time
 }
 
 func (q *Queries) DeleteOld(ctx context.Context, arg DeleteOldParams) error {
-	_, err := q.db.ExecContext(ctx, deleteOld, arg.Key, arg.CreatedAt)
+	_, err := q.db.ExecContext(ctx, deleteOld, arg.Key, arg.Expires)
 	return err
 }
 
 const getCache = `-- name: GetCache :one
-SELECT data, created_at FROM cache
+SELECT data, expires FROM cache
 WHERE key = ? LIMIT 1
 `
 
 type GetCacheRow struct {
-	Data      []byte
-	CreatedAt time.Time
+	Data    []byte
+	Expires time.Time
 }
 
 func (q *Queries) GetCache(ctx context.Context, key string) (GetCacheRow, error) {
 	row := q.db.QueryRowContext(ctx, getCache, key)
 	var i GetCacheRow
-	err := row.Scan(&i.Data, &i.CreatedAt)
+	err := row.Scan(&i.Data, &i.Expires)
 	return i, err
 }
 
 const insertCache = `-- name: InsertCache :exec
-INSERT INTO cache (key, data)
-VALUES (?, ?)
+INSERT INTO cache (key, data, expires)
+VALUES (?, ?, ?)
 ON CONFLICT(key) DO UPDATE SET
     data = excluded.data,
-    created_at = CURRENT_TIMESTAMP
+    expires = excluded.expires
 `
 
 type InsertCacheParams struct {
-	Key  string
-	Data []byte
+	Key     string
+	Data    []byte
+	Expires time.Time
 }
 
 func (q *Queries) InsertCache(ctx context.Context, arg InsertCacheParams) error {
-	_, err := q.db.ExecContext(ctx, insertCache, arg.Key, arg.Data)
+	_, err := q.db.ExecContext(ctx, insertCache, arg.Key, arg.Data, arg.Expires)
 	return err
 }

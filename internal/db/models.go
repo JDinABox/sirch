@@ -9,7 +9,7 @@ import (
 )
 
 type Cache struct {
-	Key       string
-	Data      []byte
-	CreatedAt time.Time
+	Key     string
+	Data    []byte
+	Expires time.Time
 }

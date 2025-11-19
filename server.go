@@ -53,8 +53,8 @@ func Start(options ...Option) error {
 				ctxLimit, cancel := context.WithTimeout(ctx, time.Second*30)
 				defer cancel()
 				err := queries.DeleteOld(ctxLimit, db.DeleteOldParams{
-					Key:       "search-%",
-					CreatedAt: time.Now().Add(-time.Minute * 5),
+					Key:     "search-%",
+					Expires: time.Now(),
 				})
 				if err != nil {
 					slog.Error("err running DB Cleanup", "Error", err)

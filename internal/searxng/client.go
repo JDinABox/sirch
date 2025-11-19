@@ -86,7 +86,7 @@ func (c *Client) getFromDB(ctx context.Context, key string) (*SearchResponse, er
 		}
 		return nil, err
 	}
-	if time.Since(r.CreatedAt) > time.Minute*5 {
+	if time.Until(r.Expires) <= 0 {
 		return nil, fmt.Errorf("key: %s, err: %w", key, errOldCache)
 	}
 

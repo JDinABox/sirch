@@ -2,7 +2,7 @@
 CREATE TABLE cache (
     key TEXT PRIMARY KEY,
     data BLOB NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    expires DATETIME NOT NULL
 );
 
 -- migrate:down
