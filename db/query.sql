@@ -10,4 +10,4 @@ ON CONFLICT(key) DO UPDATE SET
     expires = excluded.expires;
 
 -- name: DeleteOld :exec
-DELETE FROM cache WHERE key like ? and expires <= ?;
+DELETE FROM cache WHERE expires <= ?;

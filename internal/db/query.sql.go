@@ -11,16 +11,11 @@ import (
 )
 
 const deleteOld = `-- name: DeleteOld :exec
-DELETE FROM cache WHERE key like ? and expires <= ?
+DELETE FROM cache WHERE expires <= ?
 `
 
-type DeleteOldParams struct {
-	Key     string
-	Expires time.Time
-}
-
-func (q *Queries) DeleteOld(ctx context.Context, arg DeleteOldParams) error {
-	_, err := q.db.ExecContext(ctx, deleteOld, arg.Key, arg.Expires)
+func (q *Queries) DeleteOld(ctx context.Context, expires time.Time) error {
+	_, err := q.db.ExecContext(ctx, deleteOld, expires)
 	return err
 }
 
