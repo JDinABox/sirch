@@ -63,6 +63,8 @@ func Start(options ...Option) error {
 		}
 	})
 
+	aiClient := aiclient.NewClient("https://openrouter.ai/api/v1", conf.OpenAIKey, queries)
+
 	searchClient := searxng.NewClient(conf.SearxngHost, queries)
 	defer searchClient.Close()
 
